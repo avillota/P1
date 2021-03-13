@@ -1,0 +1,232 @@
+/*
+Gramatica para el Robot:
+Autor: Alejandro Arango
+Modificado por: Silvia Takahashi
+Modificado por: Juan Pablo Morales.
+Agregadas producciones para manejar globos
+Modificado por Silvia Takahashi
+Eliminadas producciones para manejar globos
+Agregado el esqueleto para la traduccion
+Modificado por Silvia Takahashi 
+Re: Agregar Reglas para el manejo de globos
+Modificado por Saulo Daza y Sonia Vivas
+Modificado por Silvia Takahashi
+Abril: 2008 - Simplificado apra solo interpretaci�n
+2020: Obstaculos
+
+
+ **/
+
+options 
+{
+	LOOKAHEAD=1; 
+	IGNORE_CASE=true;
+	STATIC = false;
+	
+}
+   
+
+PARSER_BEGIN(Robot)
+
+package uniandes.lym.robot.control;
+
+import uniandes.lym.robot.kernel.*;
+import java.awt.Point;
+import java.io.*;
+import java.util.Vector;
+import java.util.LinkedList;
+
+@SuppressWarnings("serial")
+public class Robot 
+{
+public ArrayList<String> variables = new ArrayList<String>();
+public ArrayList<String> funciones = new ArrayList<String>();
+public static void main(String args []) throws ParseException
+  {
+    Robot parser = new Robot(System.in);
+    while (true)
+    {
+      System.out.println("Reading from standard input...");
+      System.out.print("Enter an expression from the robot language :");
+      try
+      {
+        switch (Robot.one_line())
+        {
+          case 0 : 
+          System.out.println("OK.");
+          break;
+          case 1 : 
+          System.out.println("Goodbye.");
+          break;
+          default : 
+          break;
+        }
+      }
+      catch (Exception e)
+      {
+        System.out.println("NOK.");
+        System.out.println(e.getMessage());
+        TIP.ReInit(System.in);
+      }
+      catch (Error e)
+      {
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+        break;
+      }
+    }
+  }
+}
+
+PARSER_END(Robot)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
+
+TOKEN :
+{
+  < WALK : "walk" >
+| < ROT : "rotate" >
+| < LOOK : "look" >
+| < DROP : "drop" >
+| < FREE : "free" >
+| < PICK : "pick" >
+| < GRAB : "grab" >
+| < WT : "walkTo" >
+| < NOP : "NOP" >
+| < BLOCK : "block" >
+| < IF : "if" >
+| < DEF : "define" >
+| < BLOCKED : "blocked?" >
+| < FACING : "facing?" >
+| < CAN : "can" >
+| < NOT : "not" >
+| < PI : "(" >
+| < PD : ")" >
+| < NORTH : "N" >
+| < SOUTH : "S" >
+| < EAST : "E" >
+| < WEST : "W" >
+| < IZQ : "left" >
+| < DER : "right" >
+| < BACK : "back" >
+}
+
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| < #DIGIT : [ "0"-"9" ] >
+| < ID : (< LETTER >)+ >
+| < #LETTER : [ "a" - "z"] >
+}
+
+int one_line():
+{}
+{
+  action()
+| definition()
+| condition()
+| usarFuncion()
+
+}
+
+void action():
+{}
+{
+    < PI > (numericAction()|directionAction()) < PD >
+  
+}
+
+void numericAction():
+{}
+{
+  (< WALK >|< DROP >|< FREE >|< PICK >|< GRAB >) (< CONSTANT >|usarVariable())
+| < WT > (< CONSTANT >|usarVariable()) cardinal()  
+}
+  
+void directionAction():
+{}
+{
+  < ROT > (< IZQ >|< DER >|< BACK >)
+| < LOOK > cardinal()
+}
+
+void cardinal():
+{}
+{
+  < NORTH >
+| < SOUTH >
+| < EAST >
+| < WEST >
+}
+
+void definition():
+{}
+{
+  < PI > <DEF > (variable()|function()) <PD >
+}
+
+void variable():
+{
+  String var = "";
+}
+{
+  < ID >
+  {
+    try
+    {
+      var = token.image;
+      variables.add(var);
+    }
+    catch (Exception e){}
+  }
+  < DIGIT >
+}
+
+void function():
+{
+  String var = "";
+}
+{
+  < ID >
+  {
+    try
+    {
+      var = token.image;
+      funciones.add(var);
+    }
+    catch (Exception e){}
+  } block()
+}
+
+void block():
+{}
+{
+ < BLOCK >  (action()|usarFuncion())+    
+}
+
+void usarVariable():
+{}
+{
+  < PI > < PD >
+}
+  
+void usarFuncion():
+{}
+{
+  < PI > < PD >
+}  
+
+void condition():
+{}
+{
+  < PI > < IF > < PD > 
+}
+
+  
+
