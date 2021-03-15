@@ -30,17 +30,21 @@ PARSER_BEGIN(Robot)
 
 package uniandes.lym.robot.control;
 
-import uniandes.lym.robot.kernel.*;
 import java.awt.Point;
 import java.io.*;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+
 
 @SuppressWarnings("serial")
 public class Robot 
 {
-public ArrayList<String> variables = new ArrayList<String>();
+//public ArrayList<String> variables = new ArrayList<String>();
 public ArrayList<String> funciones = new ArrayList<String>();
+public HashMap<String, Integer > variables= new HashMap<String, Integer>();
+public HashMap<String, String > param= new HashMap<String, String>(); 
 public static void main(String args []) throws ParseException
   {
     Robot parser = new Robot(System.in);
@@ -132,7 +136,7 @@ int one_line():
 | definition()
 | condition()
 | usarFuncion()
-
+{return 0;}
 }
 
 void action():
@@ -174,6 +178,7 @@ void definition():
 void variable():
 {
   String var = "";
+  int valor=0;
 }
 {
   < ID >
@@ -181,13 +186,19 @@ void variable():
     try
     {
       var = token.image;
-      variables.add(var);
+      
     }
     catch (Exception e){}
   }
-  < DIGIT >
+  < CONSTANT >
+  {
+    try {
+      valor=Integer.parseInt(token.image);
+      variables.put(var,valor);
+    }
+    catch(Exception e) { }
 }
-
+}
 void function():
 {
   String var = "";
@@ -201,7 +212,19 @@ void function():
       funciones.add(var);
     }
     catch (Exception e){}
-  } block()
+  }
+	< PI > 
+	{
+	while(token!=null)
+	{
+	param.put(token.image,"");
+	token.getNextToken();
+	}
+    }
+    
+	< PD >
+	
+  block()
 }
 
 void block():
@@ -219,7 +242,34 @@ void usarVariable():
 void usarFuncion():
 {}
 {
-  < PI > < PD >
+  < PI >
+  < ID >
+	{
+	  try {
+	if(!funciones.contains(token.image))
+	{
+	  throw new Exception("No se ha definido una funcion con ese nombre");
+	}
+	  }
+	  catch(Exception e)
+	  { }
+	}
+	< PI >
+	{
+	  int i=0;
+	   int tamaño=param.keySet().toArray().length;
+	  String[] parametros=new String[tamaño];
+	 
+	  while(token!=null)
+	{
+	 
+	    param.replace(parametros[i],token.image);
+	    
+	   i++;
+	token.getNextToken();
+	}
+ }
+ < PD >
 }  
 
 void condition():
