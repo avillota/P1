@@ -19,7 +19,7 @@ Abril: 2008 - Simplificado apra solo interpretaciï¿½n
 
 options 
 {
-	LOOKAHEAD=1; 
+	LOOKAHEAD=2; 
 	IGNORE_CASE=true;
 	STATIC = false;
 	
@@ -34,14 +34,27 @@ import uniandes.lym.robot.kernel.*;
 import java.awt.Point;
 import java.io.*;
 import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
+
 
 @SuppressWarnings("serial")
 public class Robot 
 {
-public ArrayList<String> variables = new ArrayList<String>();
-public ArrayList<String> funciones = new ArrayList<String>();
-public static void main(String args []) throws ParseException
+//public ArrayList<String> variables = new ArrayList<String>();
+public static ArrayList<String> funciones = new ArrayList<String>();
+public static HashMap<String, Integer > variables= new HashMap<String, Integer>();
+
+public static HashMap<String, String > param= new HashMap<String, String>();
+private RobotWorldDec world;
+	
+	
+	void setWorld(RobotWorld w) {
+		world = (RobotWorldDec) w;	
+	}
+public void main(String args []) throws ParseException
+
   {
     Robot parser = new Robot(System.in);
     while (true)
@@ -66,7 +79,7 @@ public static void main(String args []) throws ParseException
       {
         System.out.println("NOK.");
         System.out.println(e.getMessage());
-        TIP.ReInit(System.in);
+        //Robot.ReInit(System.in);
       }
       catch (Error e)
       {
@@ -129,10 +142,11 @@ int one_line():
 {}
 {
   action()
-| definition()
+| definitionVariable()
+| definitionFuncion()
 | condition()
 | usarFuncion()
-
+{return 0 ;}
 }
 
 void action():
@@ -165,29 +179,41 @@ void cardinal():
 | < WEST >
 }
 
-void definition():
+void definitionVariable():
 {}
 {
-  < PI > <DEF > (variable()|function()) <PD >
-}
+  < PI ><DEF > variable()< PD >
 
+}
+void definitionFuncion():
+{}
+{
+  < PI ><DEF >function()< PD >
+}
 void variable():
 {
   String var = "";
+  int valor=0;
 }
 {
   < ID >
   {
     try
     {
-      var = token.image;
-      variables.add(var);
+      var = token.toString();
+      
     }
     catch (Exception e){}
   }
-  < DIGIT >
+  < CONSTANT >
+  {
+    try {
+      valor=Integer.parseInt(token.toString());
+      variables.put(var,valor);
+    }
+    catch(Exception e) { }
 }
-
+}
 void function():
 {
   String var = "";
@@ -197,11 +223,24 @@ void function():
   {
     try
     {
-      var = token.image;
+      var = token.toString();
       funciones.add(var);
     }
     catch (Exception e){}
-  } block()
+  }
+	< PI >
+	< ID >
+	{
+	while(token.toString()!= ")")
+	{
+	param.put(token.toString(),"");
+	token=token.next;
+	}
+    }
+    
+	< PD >
+	
+  block()
 }
 
 void block():
@@ -215,18 +254,160 @@ void usarVariable():
 {
   < PI > < PD >
 }
-  
+
 void usarFuncion():
 {}
 {
-  < PI > < PD >
+  < PI >
+  < ID >
+	{
+	  try {
+	if(!funciones.contains(token.toString()))
+	{
+	  throw new Exception("No se ha definido una funcion con ese nombre");
+	}
+	  }
+	  catch(Exception e)
+	  { }
+	}
+	< PI >
+	{
+	  int i=0;
+	   int tamaño=param.keySet().toArray().length;
+	  String[] parametros=new String[tamaño];
+	 
+	  while(token.toString()!=")")
+	{
+	 
+	    param.replace(parametros[i],token.toString());
+	    
+	   i++;
+	token=token.next;
+	}
+ }
+ < PD >
+ 
 }  
-
+  
 void condition():
 {}
 {
   < PI > < IF > < PD > 
 }
 
-  
+ 
+
+
+
+
+
+
+	
+
+
+
+
+
+TOKEN: /* Nombres de Comandos */
+{
+
+			<T_MOVER:  "Move">
+		| 	<T_TURNRIGHT: "TURNRIGHT">
+		| 	<T_PONER: "Put">
+		| 	<T_RECOGER: "Pick">
+		
+
+}
+
+TOKEN :
+{
+		<T_BALLOONS:  "BALLOONS" >
+		|	<T_CHIPS:     "CHIPS"  >	
+
+}
+
+
+
+	boolean command(StringBuffer sistema) :
+	{	
+		
+		int x;
+		String salida=new String();
+		
+	}
+	
+	{
+		(
+		   <T_TURNRIGHT> "(" ")" {world.turnRight();salida = "Comando GIRAR DER";}
+		| 	<T_MOVER>  "(" x=numero() ")" {world.moveForward(x);salida = "Comando MOVER ADELANTE";}  
+		|  <T_PONER> "("  objetoPoner() ")" {	salida = "Comando:  PONER"; }					  			
+		|  <T_RECOGER> "("  objetoRecoger()  ")"	{salida = "Comando:  Recoger";}
+		)  
+
+		{
+		    try {
+	    			        Thread.sleep(2000);
+	    			    } catch (InterruptedException e) {
+	    			        System.err.format("IOException: %s%n", e);
+	    			    }
+	    			 
+			sistema.append(salida);
+			return true;
+		}
+
+		
+
+		| <EOF> {return false;} 
+	}
+
+	void objetoPoner() :
+	{
+		int f=1;	
+	}
+	{
+		( <T_CHIPS>    "," f=numero() {world.putChips(f);})
+		|  	  ( <T_BALLOONS>   "," f=numero() {world.putBalloons(f);})	 
+
+	}
+
+	void objetoRecoger() :
+	{
+		int f=1;	
+	}
+	{
+		( <T_CHIPS>   "," f=numero() {world.pickChips(f);})
+		|  	  ( <T_BALLOONS>   "," f=numero() {world.grabBalloons(f);})	 
+
+	}
+
+	
+	
+
+	/**
+	 *  reconoce un numero entero sin signo
+	 * @return el valor entero correspondiente al valor reconocido
+	 */
+
+	int numero() throws Error:
+	{	
+		int total=1;
+	}
+	{
+		<CONSTANT>
+		{
+			try 
+			{
+				total = Integer.parseInt(token.image);
+			} 
+			catch (NumberFormatException ee) 
+			{
+				// Dada la forma de NUMERO, sabemos que solo puede tener dï¿½gitos
+				// Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+				throw new Error("Numero demasiado grande: "+token.image+"!!");
+			}
+			return total;
+		}
+	}
+
+	
 

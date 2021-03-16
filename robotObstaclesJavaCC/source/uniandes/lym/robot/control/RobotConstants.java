@@ -11,21 +11,75 @@ public interface RobotConstants {
   /** End of File. */
   int EOF = 0;
   /** RegularExpression Id. */
-  int T_MOVER = 5;
+  int WALK = 5;
   /** RegularExpression Id. */
-  int T_TURNRIGHT = 6;
+  int ROT = 6;
   /** RegularExpression Id. */
-  int T_PONER = 7;
+  int LOOK = 7;
   /** RegularExpression Id. */
-  int T_RECOGER = 8;
+  int DROP = 8;
   /** RegularExpression Id. */
-  int T_BALLOONS = 9;
+  int FREE = 9;
   /** RegularExpression Id. */
-  int T_CHIPS = 10;
+  int PICK = 10;
   /** RegularExpression Id. */
-  int NUMERO = 11;
+  int GRAB = 11;
   /** RegularExpression Id. */
-  int DIGIT = 12;
+  int WT = 12;
+  /** RegularExpression Id. */
+  int NOP = 13;
+  /** RegularExpression Id. */
+  int BLOCK = 14;
+  /** RegularExpression Id. */
+  int IF = 15;
+  /** RegularExpression Id. */
+  int DEF = 16;
+  /** RegularExpression Id. */
+  int BLOCKED = 17;
+  /** RegularExpression Id. */
+  int FACING = 18;
+  /** RegularExpression Id. */
+  int CAN = 19;
+  /** RegularExpression Id. */
+  int NOT = 20;
+  /** RegularExpression Id. */
+  int PI = 21;
+  /** RegularExpression Id. */
+  int PD = 22;
+  /** RegularExpression Id. */
+  int NORTH = 23;
+  /** RegularExpression Id. */
+  int SOUTH = 24;
+  /** RegularExpression Id. */
+  int EAST = 25;
+  /** RegularExpression Id. */
+  int WEST = 26;
+  /** RegularExpression Id. */
+  int IZQ = 27;
+  /** RegularExpression Id. */
+  int DER = 28;
+  /** RegularExpression Id. */
+  int BACK = 29;
+  /** RegularExpression Id. */
+  int CONSTANT = 30;
+  /** RegularExpression Id. */
+  int DIGIT = 31;
+  /** RegularExpression Id. */
+  int ID = 32;
+  /** RegularExpression Id. */
+  int LETTER = 33;
+  /** RegularExpression Id. */
+  int T_MOVER = 34;
+  /** RegularExpression Id. */
+  int T_TURNRIGHT = 35;
+  /** RegularExpression Id. */
+  int T_PONER = 36;
+  /** RegularExpression Id. */
+  int T_RECOGER = 37;
+  /** RegularExpression Id. */
+  int T_BALLOONS = 38;
+  /** RegularExpression Id. */
+  int T_CHIPS = 39;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -37,16 +91,41 @@ public interface RobotConstants {
     "\"\\r\"",
     "\"\\t\"",
     "\"\\n\"",
+    "\"walk\"",
+    "\"rotate\"",
+    "\"look\"",
+    "\"drop\"",
+    "\"free\"",
+    "\"pick\"",
+    "\"grab\"",
+    "\"walkTo\"",
+    "\"NOP\"",
+    "\"block\"",
+    "\"if\"",
+    "\"define\"",
+    "\"blocked?\"",
+    "\"facing?\"",
+    "\"can\"",
+    "\"not\"",
+    "\"(\"",
+    "\")\"",
+    "\"N\"",
+    "\"S\"",
+    "\"E\"",
+    "\"W\"",
+    "\"left\"",
+    "\"right\"",
+    "\"back\"",
+    "<CONSTANT>",
+    "<DIGIT>",
+    "<ID>",
+    "<LETTER>",
     "\"Move\"",
     "\"TURNRIGHT\"",
     "\"Put\"",
     "\"Pick\"",
     "\"BALLOONS\"",
     "\"CHIPS\"",
-    "<NUMERO>",
-    "<DIGIT>",
-    "\"(\"",
-    "\")\"",
     "\",\"",
   };
 
