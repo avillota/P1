@@ -132,16 +132,13 @@ TOKEN :
 	}
 	
 	{
-		(
-			< PI > < DEF > <ID > { nombreVariable=token.image; } x=numero() < PD > {variables.put(nombreVariable, x); salida= "se guardó la variable "+nombreVariable+" con un valor de "+x; }
-		|    <T_TURNRIGHT> "(" ")" {world.turnRight();salida = "Comando GIRAR DER";}
-		| 	<T_MOVER>  "(" x=numero()")" {world.moveForward(x);salida = "Comando MOVER ADELANTE";}  
-		|  <T_PONER> "("  objetoPoner() ")" {	salida = "Comando:  PONER"; }					  			
-		|  <T_RECOGER> "("  objetoRecoger()  ")"	{salida = "Comando:  Recoger";}
-		| < WALK >  (x=numero()|x=usarVariable()) {world.moveForward(x); salida = ""+x; }
-		
-		)  
+	  < PI >
+	  (
+	    <T_TURNRIGHT> "(" ")" {world.turnRight();salida = "Comando GIRAR DER";}	  | x=walk() { world.moveForward(x); salida = "el comando walk fue ejecutado y el robot caminó "+x+" pasos"; }
 
+//|otro metodo|otro metodo|etc
+      )
+      < PD >	
 		{
 		    try {
 	    			        Thread.sleep(2000);
@@ -224,34 +221,45 @@ TOKEN :
   }
 }
 
+	int walk():
+	{int rta;}
+	{
+	  
+	 < WALK > rta=numero()
+	  { return rta;}
+	}
+
 
 
 
 int one_line():
 {}
 {
+  < PI >
   action()
 | definitionVariable()
 | definitionFuncion()
 | condition()
 | usarFuncion()
+< PD >
 {return 0 ;}
 }
 
 void action():
 {}
 {
-    < PI > (numericAction()|directionAction()) < PD >
-  
+    (numericAction()|directionAction()) 
 }
 
 void numericAction():
 {}
 {
+ 
   (< WALK >|< DROP >|< FREE >|< PICK >|< GRAB >) (< CONSTANT >|usarVariable())
 | < WT > (< CONSTANT >|usarVariable()) cardinal()  
 }
-  
+
+
 void directionAction():
 {}
 {
