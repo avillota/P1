@@ -19,7 +19,7 @@ Abril: 2008 - Simplificado apra solo interpretaciï¿½n
 
 options 
 {
-	LOOKAHEAD=2; 
+	LOOKAHEAD=1; 
 	IGNORE_CASE=true;
 	STATIC = false;
 	
@@ -98,6 +98,7 @@ TOKEN: /* Nombres de Comandos */
 | < IZQ : "left" >
 | < DER : "right" >
 | < BACK : "back" >
+
 		
 		
 
@@ -109,25 +110,36 @@ TOKEN :
 		|	<T_CHIPS:     "CHIPS"  >	
 
 }
-
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| < #DIGIT : [ "0"-"9" ] >
+| < ID : (< LETTER >)+ >
+| < #LETTER : [ "a" - "z"] >
+}
 
 
 	
 	boolean command(StringBuffer sistema) :
 	{	
 		
-		int x;
+		int x=0;
 		String salida=new String();
+		String nombreVariable="";
+		
+		String nombreFuncion="";
 		
 	}
 	
 	{
 		(
-			// esta era la prueba que te comenté, no hace nada < PI > <DEF > <ID > <CONSTANT ><PD >
-		   <T_TURNRIGHT> "(" ")" {world.turnRight();salida = "Comando GIRAR DER";}
-		| 	<T_MOVER>  "(" x=numero() ")" {world.moveForward(x);salida = "Comando MOVER ADELANTE";}  
+			< PI > < DEF > <ID > { nombreVariable=token.image; } x=numero() < PD > {variables.put(nombreVariable, x); salida= "se guardó la variable "+nombreVariable+" con un valor de "+x; }
+		|    <T_TURNRIGHT> "(" ")" {world.turnRight();salida = "Comando GIRAR DER";}
+		| 	<T_MOVER>  "(" x=numero()")" {world.moveForward(x);salida = "Comando MOVER ADELANTE";}  
 		|  <T_PONER> "("  objetoPoner() ")" {	salida = "Comando:  PONER"; }					  			
 		|  <T_RECOGER> "("  objetoRecoger()  ")"	{salida = "Comando:  Recoger";}
+		| < WALK >  (x=numero()|x=usarVariable()) {world.moveForward(x); salida = ""+x; }
+		
 		)  
 
 		{
@@ -146,6 +158,9 @@ TOKEN :
 		| <EOF> {return false;} 
 	}
 
+	
+	
+
 	void objetoPoner() :
 	{
 		int f=1;	
@@ -155,6 +170,7 @@ TOKEN :
 		|  	  ( <T_BALLOONS>   "," f=numero() {world.putBalloons(f);})	 
 
 	}
+
 
 	void objetoRecoger() :
 	{
@@ -195,15 +211,21 @@ TOKEN :
 		}
 	}
 
-
-
-TOKEN :
+	int usarVariable( ) throws Error:
+	{int rta;}
 {
-  < CONSTANT : (< DIGIT >)+ >
-| < #DIGIT : [ "0"-"9" ] >
-| < ID : (< LETTER >)+ >
-| < #LETTER : [ "a" - "z"] >
+  < ID >
+ {
+    if(variables.containsKey(token.image)){
+      rta=variables.get(token.image);
+    }
+    else { throw new Error("la variable "+token.image+" no ha sido definida"); }
+    return rta;
+  }
 }
+
+
+
 
 int one_line():
 {}
@@ -316,11 +338,6 @@ void block():
  < BLOCK >  (action()|usarFuncion())+    
 }
 
-void usarVariable():
-{}
-{
-  < PI > < PD >
-}
 
 void usarFuncion():
 {}

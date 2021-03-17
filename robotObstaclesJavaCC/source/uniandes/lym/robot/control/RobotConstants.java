@@ -73,13 +73,13 @@ public interface RobotConstants {
   /** RegularExpression Id. */
   int T_CHIPS = 35;
   /** RegularExpression Id. */
-  int CONSTANT = 37;
+  int CONSTANT = 36;
   /** RegularExpression Id. */
-  int DIGIT = 38;
+  int DIGIT = 37;
   /** RegularExpression Id. */
-  int ID = 39;
+  int ID = 38;
   /** RegularExpression Id. */
-  int LETTER = 40;
+  int LETTER = 39;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -122,11 +122,11 @@ public interface RobotConstants {
     "\"back\"",
     "\"BALLOONS\"",
     "\"CHIPS\"",
-    "\",\"",
     "<CONSTANT>",
     "<DIGIT>",
     "<ID>",
     "<LETTER>",
+    "\",\"",
   };
 
 }
