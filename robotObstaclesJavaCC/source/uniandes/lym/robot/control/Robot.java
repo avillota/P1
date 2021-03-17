@@ -12,64 +12,134 @@ import java.util.LinkedList;
 
 @SuppressWarnings("serial")
 public class Robot implements RobotConstants {
-//public ArrayList<String> variables = new ArrayList<String>();
-public static ArrayList<String> funciones = new ArrayList<String>();
-public static HashMap<String, Integer > variables= new HashMap<String, Integer>();
 
-public static HashMap<String, String > param= new HashMap<String, String>();
-private RobotWorldDec world;
+        public  ArrayList<String> funciones = new ArrayList<String>();
+        public  HashMap<String, Integer > variables= new HashMap<String, Integer>();
+
+        public  HashMap<String, String > param= new HashMap<String, String>();
+        private RobotWorldDec world;
 
 
         void setWorld(RobotWorld w) {
                 world = (RobotWorldDec) w;
         }
-public void main(String args []) throws ParseException
 
-  {
-    Robot parser = new Robot(System.in);
-    while (true)
-    {
-      System.out.println("Reading from standard input...");
-      System.out.print("Enter an expression from the robot language :");
-      try
-      {
-        switch (Robot.one_line())
-        {
-          case 0 :
-          System.out.println("OK.");
-          break;
-          case 1 :
-          System.out.println("Goodbye.");
-          break;
-          default :
-          break;
-        }
+  final public boolean command(StringBuffer sistema) throws ParseException {
+                int x;
+                String salida=new String();
+    if (jj_2_5(2)) {
+      if (jj_2_1(2)) {
+        jj_consume_token(T_TURNRIGHT);
+        jj_consume_token(PI);
+        jj_consume_token(PD);
+                                          world.turnRight();salida = "Comando GIRAR DER";
+      } else if (jj_2_2(2)) {
+        jj_consume_token(T_MOVER);
+        jj_consume_token(PI);
+        x = numero();
+        jj_consume_token(PD);
+                                                       world.moveForward(x);salida = "Comando MOVER ADELANTE";
+      } else if (jj_2_3(2)) {
+        jj_consume_token(T_PONER);
+        jj_consume_token(PI);
+        objetoPoner();
+        jj_consume_token(PD);
+                                                        salida = "Comando:  PONER";
+      } else if (jj_2_4(2)) {
+        jj_consume_token(T_RECOGER);
+        jj_consume_token(PI);
+        objetoRecoger();
+        jj_consume_token(PD);
+                                                                 salida = "Comando:  Recoger";
+      } else {
+        jj_consume_token(-1);
+        throw new ParseException();
       }
-      catch (Exception e)
-      {
-        System.out.println("NOK.");
-        System.out.println(e.getMessage());
-        //Robot.ReInit(System.in);
-      }
-      catch (Error e)
-      {
-        System.out.println("Oops.");
-        System.out.println(e.getMessage());
-        break;
-      }
+                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException e) {
+                                        System.err.format("IOException: %s%n", e);
+                                    }
+
+                        sistema.append(salida);
+                        {if (true) return true;}
+    } else if (jj_2_6(2)) {
+      jj_consume_token(0);
+                         {if (true) return false;}
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    throw new Error("Missing return statement in function");
+  }
+
+  final public void objetoPoner() throws ParseException {
+                int f=1;
+    if (jj_2_7(2)) {
+      jj_consume_token(T_CHIPS);
+      jj_consume_token(36);
+      f = numero();
+                                               world.putChips(f);
+    } else if (jj_2_8(2)) {
+      jj_consume_token(T_BALLOONS);
+      jj_consume_token(36);
+      f = numero();
+                                                           world.putBalloons(f);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
     }
   }
 
+  final public void objetoRecoger() throws ParseException {
+                int f=1;
+    if (jj_2_9(2)) {
+      jj_consume_token(T_CHIPS);
+      jj_consume_token(36);
+      f = numero();
+                                              world.pickChips(f);
+    } else if (jj_2_10(2)) {
+      jj_consume_token(T_BALLOONS);
+      jj_consume_token(36);
+      f = numero();
+                                                           world.grabBalloons(f);
+    } else {
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
+        /**
+	 *  reconoce un numero entero sin signo
+	 * @return el valor entero correspondiente al valor reconocido
+	 */
+  final public int numero() throws ParseException, Error {
+                int total=1;
+    jj_consume_token(CONSTANT);
+                        try
+                        {
+                                total = Integer.parseInt(token.image);
+                        }
+                        catch (NumberFormatException ee)
+                        {
+                                // Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
+                                // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
+                                {if (true) throw new Error("Numero demasiado grande: "+token.image+"!!");}
+                        }
+                        {if (true) return total;}
+    throw new Error("Missing return statement in function");
+  }
+
   final public int one_line() throws ParseException {
-    if (jj_2_1(2)) {
+    if (jj_2_11(2)) {
       action();
-    } else if (jj_2_2(2)) {
+    } else if (jj_2_12(2)) {
       definitionVariable();
-    } else if (jj_2_3(2)) {
+    } else if (jj_2_13(2)) {
       definitionFuncion();
-    } else if (jj_2_4(2)) {
+    } else if (jj_2_14(2)) {
       condition();
-    } else if (jj_2_5(2)) {
+    } else if (jj_2_15(2)) {
       usarFuncion();
  {if (true) return 0 ;}
     } else {
@@ -81,9 +151,9 @@ public void main(String args []) throws ParseException
 
   final public void action() throws ParseException {
     jj_consume_token(PI);
-    if (jj_2_6(2)) {
+    if (jj_2_16(2)) {
       numericAction();
-    } else if (jj_2_7(2)) {
+    } else if (jj_2_17(2)) {
       directionAction();
     } else {
       jj_consume_token(-1);
@@ -93,34 +163,34 @@ public void main(String args []) throws ParseException
   }
 
   final public void numericAction() throws ParseException {
-    if (jj_2_17(2)) {
-      if (jj_2_8(2)) {
+    if (jj_2_27(2)) {
+      if (jj_2_18(2)) {
         jj_consume_token(WALK);
-      } else if (jj_2_9(2)) {
+      } else if (jj_2_19(2)) {
         jj_consume_token(DROP);
-      } else if (jj_2_10(2)) {
+      } else if (jj_2_20(2)) {
         jj_consume_token(FREE);
-      } else if (jj_2_11(2)) {
+      } else if (jj_2_21(2)) {
         jj_consume_token(PICK);
-      } else if (jj_2_12(2)) {
+      } else if (jj_2_22(2)) {
         jj_consume_token(GRAB);
       } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      if (jj_2_13(2)) {
+      if (jj_2_23(2)) {
         jj_consume_token(CONSTANT);
-      } else if (jj_2_14(2)) {
+      } else if (jj_2_24(2)) {
         usarVariable();
       } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-    } else if (jj_2_18(2)) {
+    } else if (jj_2_28(2)) {
       jj_consume_token(WT);
-      if (jj_2_15(2)) {
+      if (jj_2_25(2)) {
         jj_consume_token(CONSTANT);
-      } else if (jj_2_16(2)) {
+      } else if (jj_2_26(2)) {
         usarVariable();
       } else {
         jj_consume_token(-1);
@@ -134,19 +204,19 @@ public void main(String args []) throws ParseException
   }
 
   final public void directionAction() throws ParseException {
-    if (jj_2_22(2)) {
+    if (jj_2_32(2)) {
       jj_consume_token(ROT);
-      if (jj_2_19(2)) {
+      if (jj_2_29(2)) {
         jj_consume_token(IZQ);
-      } else if (jj_2_20(2)) {
+      } else if (jj_2_30(2)) {
         jj_consume_token(DER);
-      } else if (jj_2_21(2)) {
+      } else if (jj_2_31(2)) {
         jj_consume_token(BACK);
       } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-    } else if (jj_2_23(2)) {
+    } else if (jj_2_33(2)) {
       jj_consume_token(LOOK);
       cardinal();
     } else {
@@ -156,13 +226,13 @@ public void main(String args []) throws ParseException
   }
 
   final public void cardinal() throws ParseException {
-    if (jj_2_24(2)) {
+    if (jj_2_34(2)) {
       jj_consume_token(NORTH);
-    } else if (jj_2_25(2)) {
+    } else if (jj_2_35(2)) {
       jj_consume_token(SOUTH);
-    } else if (jj_2_26(2)) {
+    } else if (jj_2_36(2)) {
       jj_consume_token(EAST);
-    } else if (jj_2_27(2)) {
+    } else if (jj_2_37(2)) {
       jj_consume_token(WEST);
     } else {
       jj_consume_token(-1);
@@ -226,15 +296,15 @@ public void main(String args []) throws ParseException
     jj_consume_token(BLOCK);
     label_1:
     while (true) {
-      if (jj_2_28(2)) {
+      if (jj_2_38(2)) {
         action();
-      } else if (jj_2_29(2)) {
+      } else if (jj_2_39(2)) {
         usarFuncion();
       } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
-      if (jj_2_30(2)) {
+      if (jj_2_40(2)) {
         ;
       } else {
         break label_1;
@@ -278,112 +348,6 @@ public void main(String args []) throws ParseException
     jj_consume_token(PI);
     jj_consume_token(IF);
     jj_consume_token(PD);
-  }
-
-  final public boolean command(StringBuffer sistema) throws ParseException {
-                int x;
-                String salida=new String();
-    if (jj_2_35(2)) {
-      if (jj_2_31(2)) {
-        jj_consume_token(T_TURNRIGHT);
-        jj_consume_token(PI);
-        jj_consume_token(PD);
-                                          world.turnRight();salida = "Comando GIRAR DER";
-      } else if (jj_2_32(2)) {
-        jj_consume_token(T_MOVER);
-        jj_consume_token(PI);
-        x = numero();
-        jj_consume_token(PD);
-                                                       world.moveForward(x);salida = "Comando MOVER ADELANTE";
-      } else if (jj_2_33(2)) {
-        jj_consume_token(T_PONER);
-        jj_consume_token(PI);
-        objetoPoner();
-        jj_consume_token(PD);
-                                                        salida = "Comando:  PONER";
-      } else if (jj_2_34(2)) {
-        jj_consume_token(T_RECOGER);
-        jj_consume_token(PI);
-        objetoRecoger();
-        jj_consume_token(PD);
-                                                                 salida = "Comando:  Recoger";
-      } else {
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        System.err.format("IOException: %s%n", e);
-                                    }
-
-                        sistema.append(salida);
-                        {if (true) return true;}
-    } else if (jj_2_36(2)) {
-      jj_consume_token(0);
-                         {if (true) return false;}
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-    throw new Error("Missing return statement in function");
-  }
-
-  final public void objetoPoner() throws ParseException {
-                int f=1;
-    if (jj_2_37(2)) {
-      jj_consume_token(T_CHIPS);
-      jj_consume_token(40);
-      f = numero();
-                                               world.putChips(f);
-    } else if (jj_2_38(2)) {
-      jj_consume_token(T_BALLOONS);
-      jj_consume_token(40);
-      f = numero();
-                                                           world.putBalloons(f);
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-  }
-
-  final public void objetoRecoger() throws ParseException {
-                int f=1;
-    if (jj_2_39(2)) {
-      jj_consume_token(T_CHIPS);
-      jj_consume_token(40);
-      f = numero();
-                                              world.pickChips(f);
-    } else if (jj_2_40(2)) {
-      jj_consume_token(T_BALLOONS);
-      jj_consume_token(40);
-      f = numero();
-                                                           world.grabBalloons(f);
-    } else {
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
-  }
-
-        /**
-	 *  reconoce un numero entero sin signo
-	 * @return el valor entero correspondiente al valor reconocido
-	 */
-  final public int numero() throws ParseException, Error {
-                int total=1;
-    jj_consume_token(CONSTANT);
-                        try
-                        {
-                                total = Integer.parseInt(token.image);
-                        }
-                        catch (NumberFormatException ee)
-                        {
-                                // Dada la forma de NUMERO, sabemos que solo puede tener d�gitos
-                                // Por lo tanto, lo unico que podria pasar es que el numero sea muy grande
-                                {if (true) throw new Error("Numero demasiado grande: "+token.image+"!!");}
-                        }
-                        {if (true) return total;}
-    throw new Error("Missing return statement in function");
   }
 
   private boolean jj_2_1(int xla) {
@@ -666,12 +630,62 @@ public void main(String args []) throws ParseException
     finally { jj_save(39, xla); }
   }
 
-  private boolean jj_3_36() {
+  private boolean jj_3_23() {
+    if (jj_scan_token(CONSTANT)) return true;
+    return false;
+  }
+
+  private boolean jj_3_8() {
+    if (jj_scan_token(T_BALLOONS)) return true;
+    if (jj_scan_token(36)) return true;
+    return false;
+  }
+
+  private boolean jj_3_9() {
+    if (jj_scan_token(T_CHIPS)) return true;
+    if (jj_scan_token(36)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_5() {
+    if (jj_scan_token(PI)) return true;
+    if (jj_scan_token(IF)) return true;
+    return false;
+  }
+
+  private boolean jj_3_22() {
+    if (jj_scan_token(GRAB)) return true;
+    return false;
+  }
+
+  private boolean jj_3_7() {
+    if (jj_scan_token(T_CHIPS)) return true;
+    if (jj_scan_token(36)) return true;
+    return false;
+  }
+
+  private boolean jj_3_31() {
+    if (jj_scan_token(BACK)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_4() {
+    if (jj_scan_token(PI)) return true;
+    if (jj_scan_token(DEF)) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
     if (jj_scan_token(0)) return true;
     return false;
   }
 
-  private boolean jj_3_20() {
+  private boolean jj_3_21() {
+    if (jj_scan_token(PICK)) return true;
+    return false;
+  }
+
+  private boolean jj_3_30() {
     if (jj_scan_token(DER)) return true;
     return false;
   }
@@ -682,37 +696,43 @@ public void main(String args []) throws ParseException
     return false;
   }
 
-  private boolean jj_3_16() {
+  private boolean jj_3_26() {
     if (jj_3R_9()) return true;
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_scan_token(FREE)) return true;
-    return false;
-  }
-
-  private boolean jj_3_7() {
+  private boolean jj_3_17() {
     if (jj_3R_8()) return true;
     return false;
   }
 
-  private boolean jj_3_27() {
+  private boolean jj_3_20() {
+    if (jj_scan_token(FREE)) return true;
+    return false;
+  }
+
+  private boolean jj_3_37() {
     if (jj_scan_token(WEST)) return true;
     return false;
   }
 
-  private boolean jj_3_19() {
-    if (jj_scan_token(IZQ)) return true;
-    return false;
-  }
-
-  private boolean jj_3_26() {
+  private boolean jj_3_36() {
     if (jj_scan_token(EAST)) return true;
     return false;
   }
 
-  private boolean jj_3_25() {
+  private boolean jj_3_2() {
+    if (jj_scan_token(T_MOVER)) return true;
+    if (jj_scan_token(PI)) return true;
+    return false;
+  }
+
+  private boolean jj_3_29() {
+    if (jj_scan_token(IZQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3_35() {
     if (jj_scan_token(SOUTH)) return true;
     return false;
   }
@@ -720,90 +740,100 @@ public void main(String args []) throws ParseException
   private boolean jj_3R_10() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_24()) {
+    if (jj_3_34()) {
     jj_scanpos = xsp;
-    if (jj_3_25()) {
+    if (jj_3_35()) {
     jj_scanpos = xsp;
-    if (jj_3_26()) {
+    if (jj_3_36()) {
     jj_scanpos = xsp;
-    if (jj_3_27()) return true;
+    if (jj_3_37()) return true;
     }
     }
     }
-    return false;
-  }
-
-  private boolean jj_3_24() {
-    if (jj_scan_token(NORTH)) return true;
-    return false;
-  }
-
-  private boolean jj_3_29() {
-    if (jj_3R_6()) return true;
-    return false;
-  }
-
-  private boolean jj_3_32() {
-    if (jj_scan_token(T_MOVER)) return true;
-    if (jj_scan_token(PI)) return true;
-    return false;
-  }
-
-  private boolean jj_3_9() {
-    if (jj_scan_token(DROP)) return true;
-    return false;
-  }
-
-  private boolean jj_3_15() {
-    if (jj_scan_token(CONSTANT)) return true;
     return false;
   }
 
   private boolean jj_3_34() {
+    if (jj_scan_token(NORTH)) return true;
+    return false;
+  }
+
+  private boolean jj_3_4() {
     if (jj_scan_token(T_RECOGER)) return true;
     if (jj_scan_token(PI)) return true;
     return false;
   }
 
-  private boolean jj_3_23() {
-    if (jj_scan_token(LOOK)) return true;
-    if (jj_3R_10()) return true;
+  private boolean jj_3_39() {
+    if (jj_3R_6()) return true;
+    return false;
+  }
+
+  private boolean jj_3_3() {
+    if (jj_scan_token(T_PONER)) return true;
+    if (jj_scan_token(PI)) return true;
+    return false;
+  }
+
+  private boolean jj_3_1() {
+    if (jj_scan_token(T_TURNRIGHT)) return true;
+    if (jj_scan_token(PI)) return true;
+    return false;
+  }
+
+  private boolean jj_3_19() {
+    if (jj_scan_token(DROP)) return true;
+    return false;
+  }
+
+  private boolean jj_3_25() {
+    if (jj_scan_token(CONSTANT)) return true;
     return false;
   }
 
   private boolean jj_3_33() {
-    if (jj_scan_token(T_PONER)) return true;
-    if (jj_scan_token(PI)) return true;
+    if (jj_scan_token(LOOK)) return true;
+    if (jj_3R_10()) return true;
     return false;
   }
 
   private boolean jj_3R_8() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_22()) {
+    if (jj_3_32()) {
     jj_scanpos = xsp;
-    if (jj_3_23()) return true;
+    if (jj_3_33()) return true;
     }
     return false;
   }
 
-  private boolean jj_3_22() {
+  private boolean jj_3_32() {
     if (jj_scan_token(ROT)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_19()) {
+    if (jj_3_29()) {
     jj_scanpos = xsp;
-    if (jj_3_20()) {
+    if (jj_3_30()) {
     jj_scanpos = xsp;
-    if (jj_3_21()) return true;
+    if (jj_3_31()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3_31() {
-    if (jj_scan_token(T_TURNRIGHT)) return true;
-    if (jj_scan_token(PI)) return true;
+  private boolean jj_3_5() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_1()) {
+    jj_scanpos = xsp;
+    if (jj_3_2()) {
+    jj_scanpos = xsp;
+    if (jj_3_3()) {
+    jj_scanpos = xsp;
+    if (jj_3_4()) return true;
+    }
+    }
+    }
     return false;
   }
 
@@ -813,54 +843,38 @@ public void main(String args []) throws ParseException
     return false;
   }
 
-  private boolean jj_3_6() {
-    if (jj_3R_7()) return true;
+  private boolean jj_3_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_38()) {
+    jj_scanpos = xsp;
+    if (jj_3_39()) return true;
+    }
     return false;
   }
 
-  private boolean jj_3_28() {
+  private boolean jj_3_38() {
     if (jj_3R_2()) return true;
     return false;
   }
 
-  private boolean jj_3_30() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_28()) {
-    jj_scanpos = xsp;
-    if (jj_3_29()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_31()) {
-    jj_scanpos = xsp;
-    if (jj_3_32()) {
-    jj_scanpos = xsp;
-    if (jj_3_33()) {
-    jj_scanpos = xsp;
-    if (jj_3_34()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3_8() {
-    if (jj_scan_token(WALK)) return true;
+  private boolean jj_3_16() {
+    if (jj_3R_7()) return true;
     return false;
   }
 
   private boolean jj_3_18() {
+    if (jj_scan_token(WALK)) return true;
+    return false;
+  }
+
+  private boolean jj_3_28() {
     if (jj_scan_token(WT)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_15()) {
+    if (jj_3_25()) {
     jj_scanpos = xsp;
-    if (jj_3_16()) return true;
+    if (jj_3_26()) return true;
     }
     return false;
   }
@@ -868,33 +882,33 @@ public void main(String args []) throws ParseException
   private boolean jj_3R_7() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_17()) {
+    if (jj_3_27()) {
     jj_scanpos = xsp;
-    if (jj_3_18()) return true;
+    if (jj_3_28()) return true;
     }
     return false;
   }
 
-  private boolean jj_3_17() {
+  private boolean jj_3_27() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_8()) {
+    if (jj_3_18()) {
     jj_scanpos = xsp;
-    if (jj_3_9()) {
+    if (jj_3_19()) {
     jj_scanpos = xsp;
-    if (jj_3_10()) {
+    if (jj_3_20()) {
     jj_scanpos = xsp;
-    if (jj_3_11()) {
+    if (jj_3_21()) {
     jj_scanpos = xsp;
-    if (jj_3_12()) return true;
+    if (jj_3_22()) return true;
     }
     }
     }
     }
     xsp = jj_scanpos;
-    if (jj_3_13()) {
+    if (jj_3_23()) {
     jj_scanpos = xsp;
-    if (jj_3_14()) return true;
+    if (jj_3_24()) return true;
     }
     return false;
   }
@@ -909,96 +923,46 @@ public void main(String args []) throws ParseException
     if (jj_scan_token(PI)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_6()) {
+    if (jj_3_16()) {
     jj_scanpos = xsp;
-    if (jj_3_7()) return true;
+    if (jj_3_17()) return true;
     }
     return false;
   }
 
-  private boolean jj_3_5() {
+  private boolean jj_3_15() {
     if (jj_3R_6()) return true;
     return false;
   }
 
-  private boolean jj_3_4() {
+  private boolean jj_3_14() {
     if (jj_3R_5()) return true;
     return false;
   }
 
-  private boolean jj_3_3() {
+  private boolean jj_3_13() {
     if (jj_3R_4()) return true;
     return false;
   }
 
-  private boolean jj_3_2() {
+  private boolean jj_3_12() {
     if (jj_3R_3()) return true;
     return false;
   }
 
-  private boolean jj_3_1() {
+  private boolean jj_3_11() {
     if (jj_3R_2()) return true;
     return false;
   }
 
-  private boolean jj_3_14() {
+  private boolean jj_3_24() {
     if (jj_3R_9()) return true;
     return false;
   }
 
-  private boolean jj_3_40() {
+  private boolean jj_3_10() {
     if (jj_scan_token(T_BALLOONS)) return true;
-    if (jj_scan_token(40)) return true;
-    return false;
-  }
-
-  private boolean jj_3_13() {
-    if (jj_scan_token(CONSTANT)) return true;
-    return false;
-  }
-
-  private boolean jj_3_38() {
-    if (jj_scan_token(T_BALLOONS)) return true;
-    if (jj_scan_token(40)) return true;
-    return false;
-  }
-
-  private boolean jj_3_39() {
-    if (jj_scan_token(T_CHIPS)) return true;
-    if (jj_scan_token(40)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_5() {
-    if (jj_scan_token(PI)) return true;
-    if (jj_scan_token(IF)) return true;
-    return false;
-  }
-
-  private boolean jj_3_12() {
-    if (jj_scan_token(GRAB)) return true;
-    return false;
-  }
-
-  private boolean jj_3_21() {
-    if (jj_scan_token(BACK)) return true;
-    return false;
-  }
-
-  private boolean jj_3_37() {
-    if (jj_scan_token(T_CHIPS)) return true;
-    if (jj_scan_token(40)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_4() {
-    if (jj_scan_token(PI)) return true;
-    if (jj_scan_token(DEF)) return true;
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_scan_token(PICK)) return true;
+    if (jj_scan_token(36)) return true;
     return false;
   }
 
