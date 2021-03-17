@@ -44,6 +44,9 @@ public class Robot implements RobotConstants {
         x = walk();
                        world.moveForward(x); salida = "el comando walk fue ejecutado y el robot camin\u00f3 "+x+" pasos";
         break;
+      case DEF:
+        salida = define();
+        break;
       default:
         jj_la1[0] = jj_gen;
         jj_consume_token(-1);
@@ -136,17 +139,6 @@ public class Robot implements RobotConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public int usarVariable() throws ParseException, Error {
-         int rta;
-    jj_consume_token(ID);
-    if(variables.containsKey(token.image)){
-      rta=variables.get(token.image);
-    }
-    else { {if (true) throw new Error("la variable "+token.image+" no ha sido definida");} }
-    {if (true) return rta;}
-    throw new Error("Missing return statement in function");
-  }
-
   final public int walk() throws ParseException {
          int rta;
     jj_consume_token(WALK);
@@ -155,113 +147,42 @@ public class Robot implements RobotConstants {
     throw new Error("Missing return statement in function");
   }
 
-  final public int one_line() throws ParseException {
+  final public String define() throws ParseException {
+          String rta="";
+    jj_consume_token(DEF);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case ID:
+      rta = variable();
+      break;
     case PI:
-      jj_consume_token(PI);
-      action();
-      break;
-      definitionVariable();
-      break;
-      definitionFuncion();
-      break;
-      condition();
-      break;
-      usarFuncion();
-      jj_consume_token(PD);
- {if (true) return 0 ;}
+      rta = funcion();
       break;
     default:
       jj_la1[4] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+                  {if (true) return rta;}
     throw new Error("Missing return statement in function");
   }
 
-  final public void action() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case WALK:
-    case DROP:
-    case FREE:
-    case PICK:
-    case GRAB:
-    case WT:
-      numericAction();
-      break;
-    case ROT:
-    case LOOK:
-      directionAction();
-      break;
-    default:
-      jj_la1[5] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+  final public String variable() throws ParseException {
+          String rta="";
+          String nombreVariable="";
+          int x;
+    jj_consume_token(ID);
+                   nombreVariable=token.image;
+    x = numero();
+          variables.put(nombreVariable, x);
+         rta= "se guard\u00f3 la variable "+nombreVariable+" con un valor de "+x;{if (true) return rta;}
+    throw new Error("Missing return statement in function");
   }
 
-  final public void numericAction() throws ParseException {
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case WALK:
-    case DROP:
-    case FREE:
-    case PICK:
-    case GRAB:
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case WALK:
-        jj_consume_token(WALK);
-        break;
-      case DROP:
-        jj_consume_token(DROP);
-        break;
-      case FREE:
-        jj_consume_token(FREE);
-        break;
-      case PICK:
-        jj_consume_token(PICK);
-        break;
-      case GRAB:
-        jj_consume_token(GRAB);
-        break;
-      default:
-        jj_la1[6] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CONSTANT:
-        jj_consume_token(CONSTANT);
-        break;
-      case ID:
-        usarVariable();
-        break;
-      default:
-        jj_la1[7] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      break;
-    case WT:
-      jj_consume_token(WT);
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case CONSTANT:
-        jj_consume_token(CONSTANT);
-        break;
-      case ID:
-        usarVariable();
-        break;
-      default:
-        jj_la1[8] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      cardinal();
-      break;
-    default:
-      jj_la1[9] = jj_gen;
-      jj_consume_token(-1);
-      throw new ParseException();
-    }
+  final public String funcion() throws ParseException {
+    jj_consume_token(PI);
+    jj_consume_token(PD);
+          {if (true) return "pedo";}
+    throw new Error("Missing return statement in function");
   }
 
   final public void directionAction() throws ParseException {
@@ -279,7 +200,7 @@ public class Robot implements RobotConstants {
         jj_consume_token(BACK);
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[5] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -289,7 +210,7 @@ public class Robot implements RobotConstants {
       cardinal();
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[6] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -310,7 +231,7 @@ public class Robot implements RobotConstants {
       jj_consume_token(WEST);
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -330,7 +251,7 @@ public class Robot implements RobotConstants {
     jj_consume_token(PD);
   }
 
-  final public void variable() throws ParseException {
+  final public void variablessss() throws ParseException {
   String var = "";
   int valor=0;
     jj_consume_token(ID);
@@ -372,39 +293,13 @@ public class Robot implements RobotConstants {
     jj_consume_token(BLOCK);
     label_1:
     while (true) {
+      usarFuncion();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case WALK:
-      case ROT:
-      case LOOK:
-      case DROP:
-      case FREE:
-      case PICK:
-      case GRAB:
-      case WT:
-        action();
-        break;
-      case PI:
-        usarFuncion();
-        break;
-      default:
-        jj_la1[13] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case WALK:
-      case ROT:
-      case LOOK:
-      case DROP:
-      case FREE:
-      case PICK:
-      case GRAB:
-      case WT:
       case PI:
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[8] = jj_gen;
         break label_1;
       }
     }
@@ -452,7 +347,7 @@ public class Robot implements RobotConstants {
   public Token jj_nt;
   private int jj_ntk;
   private int jj_gen;
-  final private int[] jj_la1 = new int[15];
+  final private int[] jj_la1 = new int[9];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -460,10 +355,10 @@ public class Robot implements RobotConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x240,0x2000001,0x0,0x0,0x2000000,0x1fe00,0xf200,0x0,0x0,0x1f200,0x80000000,0xc00,0x78000000,0x201fe00,0x201fe00,};
+      jj_la1_0 = new int[] {0x100240,0x2000001,0x0,0x0,0x2000000,0x80000000,0xc00,0x78000000,0x2000000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0xc,0xc,0x0,0x0,0x0,0x50,0x50,0x0,0x3,0x0,0x0,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0xc,0xc,0x40,0x3,0x0,0x0,0x0,};
    }
 
   /** Constructor with InputStream. */
@@ -477,7 +372,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -491,7 +386,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -501,7 +396,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -511,7 +406,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -520,7 +415,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -529,7 +424,7 @@ public class Robot implements RobotConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 15; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   private Token jj_consume_token(int kind) throws ParseException {
@@ -585,7 +480,7 @@ public class Robot implements RobotConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 15; i++) {
+    for (int i = 0; i < 9; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

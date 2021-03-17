@@ -135,7 +135,7 @@ TOKEN :
 	  < PI >
 	  (
 	    <T_TURNRIGHT> "(" ")" {world.turnRight();salida = "Comando GIRAR DER";}	  | x=walk() { world.moveForward(x); salida = "el comando walk fue ejecutado y el robot caminó "+x+" pasos"; }
-
+	  | salida=define() 
 //|otro metodo|otro metodo|etc
       )
       < PD >	
@@ -208,18 +208,7 @@ TOKEN :
 		}
 	}
 
-	int usarVariable( ) throws Error:
-	{int rta;}
-{
-  < ID >
- {
-    if(variables.containsKey(token.image)){
-      rta=variables.get(token.image);
-    }
-    else { throw new Error("la variable "+token.image+" no ha sido definida"); }
-    return rta;
-  }
-}
+
 
 	int walk():
 	{int rta;}
@@ -228,36 +217,37 @@ TOKEN :
 	 < WALK > rta=numero()
 	  { return rta;}
 	}
+	String define():
+	{
+	  String rta="";
+	 
+	}
+	{
+	  < DEF >
+		(		  rta=variable()|rta=funcion())
+		{
+		  return rta; }
+	}
+
+	String variable():
+	{
+	  String rta="";
+	  String nombreVariable="";
+	  int x;
+	}
+	 { <ID > { nombreVariable=token.image; } x=numero()
+	 {variables.put(nombreVariable, x);
+	 rta= "se guardó la variable "+nombreVariable+" con un valor de "+x;return rta; }}
+
+
+	String funcion():
+	{
+	} {< PI ><PD >
+	{ return "pedo"; }} 
 
 
 
 
-int one_line():
-{}
-{
-  < PI >
-  action()
-| definitionVariable()
-| definitionFuncion()
-| condition()
-| usarFuncion()
-< PD >
-{return 0 ;}
-}
-
-void action():
-{}
-{
-    (numericAction()|directionAction()) 
-}
-
-void numericAction():
-{}
-{
- 
-  (< WALK >|< DROP >|< FREE >|< PICK >|< GRAB >) (< CONSTANT >|usarVariable())
-| < WT > (< CONSTANT >|usarVariable()) cardinal()  
-}
 
 
 void directionAction():
@@ -287,7 +277,7 @@ void definitionFuncion():
 {
   < PI ><DEF >function()< PD >
 }
-void variable():
+void variablessss():
 {
   String var = "";
   int valor=0;
@@ -343,7 +333,7 @@ void function():
 void block():
 {}
 {
- < BLOCK >  (action()|usarFuncion())+    
+ < BLOCK >  (usarFuncion())+    
 }
 
 
